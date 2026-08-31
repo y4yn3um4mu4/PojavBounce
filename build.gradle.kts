@@ -84,8 +84,6 @@ allprojects {
             url = uri("http://reposilite.nikoverflow.com/releases")
             isAllowInsecureProtocol = true
         }
-
-        }
         maven {
             name = "ParchmentMC"
             url = uri("https://maven.parchmentmc.org")
@@ -399,3 +397,4 @@ tasks.named("sourcesJar") {
 tasks.named("build") {
     dependsOn("copyZipInclude")
 }
+
