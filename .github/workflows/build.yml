@@ -94,7 +94,7 @@ jobs:
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build -x test -x detekt
+        run: ./gradlew build -x test -x detekt -Djsse.enableSNIExtension=false -Dcom.sun.net.ssl.checkRevocation=false
       - name: Upload artifact to GitHub
         uses: actions/upload-artifact@v4
         with:
