@@ -81,7 +81,10 @@ allprojects {
         }
         maven {
             name = "NikOverflow"
-            url = uri("https://reposilite.nikoverflow.com/releases")
+            url = uri("http://reposilite.nikoverflow.com/releases")
+            isAllowInsecureProtocol = true
+        }
+
         }
         maven {
             name = "ParchmentMC"
