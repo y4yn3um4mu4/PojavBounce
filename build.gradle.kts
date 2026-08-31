@@ -122,8 +122,8 @@ dependencies {
     modRuntimeOnly(libs.vfp)
 
     // Exploit Preventer
-    modApi(libs.exploitPreventer.api)
-    modRuntimeOnly(libs.exploitPreventer)
+    // modApi(libs.exploitPreventer.api)
+    // modRuntimeOnly(libs.exploitPreventer)
 
     // Minecraft Authlib
     jij(libs.mcAuthlib)
@@ -397,4 +397,3 @@ tasks.named("sourcesJar") {
 tasks.named("build") {
     dependsOn("copyZipInclude")
 }
-
