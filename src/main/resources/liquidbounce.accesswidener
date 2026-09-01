@@ -195,4 +195,3 @@ accessible field net/minecraft/client/renderer/GameRenderer renderBuffers Lnet/m
 
 accessible class net/minecraft/client/renderer/OutlineBufferSource$EntityOutlineGenerator
 accessible method net/minecraft/client/renderer/OutlineBufferSource$EntityOutlineGenerator <init> (Lcom/mojang/blaze3d/vertex/VertexConsumer;I)V
-accessible field net/minecraft/class_10799 field_60126 Lnet/minecraft/class_10799$class_10800;
