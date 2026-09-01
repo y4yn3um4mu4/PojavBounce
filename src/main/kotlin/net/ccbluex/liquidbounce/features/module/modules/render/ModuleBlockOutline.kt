@@ -24,7 +24,6 @@ import net.ccbluex.liquidbounce.event.events.WorldRenderEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.ClientModule
 import net.ccbluex.liquidbounce.features.module.ModuleCategories
-import net.ccbluex.liquidbounce.injection.mixins.minecraft.render.MixinLevelRenderer
 import net.ccbluex.liquidbounce.render.drawBox
 import net.ccbluex.liquidbounce.render.drawBoxSide
 import net.ccbluex.liquidbounce.render.engine.type.Color4b
@@ -45,8 +44,6 @@ import net.minecraft.world.phys.shapes.VoxelShape
  * Changes the way Minecraft highlights blocks.
  *
  * TODO: Implement GUI Information Panel
- *
- * @see MixinLevelRenderer.cancelBlockOutline
  */
 object ModuleBlockOutline : ClientModule("BlockOutline", ModuleCategories.RENDER, aliases = listOf("BlockOverlay")) {
 
