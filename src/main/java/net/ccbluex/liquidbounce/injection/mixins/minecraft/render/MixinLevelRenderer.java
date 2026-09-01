@@ -157,6 +157,66 @@ public abstract class MixinLevelRenderer {
             ci.cancel();
         }
     }
+}
+    }
+
+    @ModifyExpressionValue(method = "method_62218", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/ARGB;colorFromFloat(FFFF)I"))
+    private int customFogClearColor(int original) {
+        return ModuleCustomAmbience.FogConfigurable.INSTANCE.modifyClearColor(original);
+    }
+
+    // this method is a lambda
+    @Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"))
+    private void onDrawOutlines(GpuBufferSlice gpuBufferSlice, LevelRenderState worldRenderState, ProfilerFiller profiler,
+        Matrix4f matrix4f, ResourceHandle handle, ResourceHandle handle2, boolean bl, ResourceHandle handle3, ResourceHandle handle4, CallbackInfo ci) {
+        OutlineShaderRenderer.INSTANCE.drawBlitIfDirty(this.minecraft.getMainRenderTarget());
+    }
+
+    @Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V", shift = At.Shift.BEFORE))
+    private void onRenderGlow(GpuBufferSlice gpuBufferSlice, LevelRenderState worldRenderState, ProfilerFiller profiler,
+        Matrix4f matrix4f, ResourceHandle handle, ResourceHandle handle2, boolean bl, ResourceHandle handle3, ResourceHandle handle4, CallbackInfo ci) {
+        var entityOutlineFb = entityOutlineTarget();
+        if (!this.shouldShowEntityOutlines() || entityOutlineFb == null) {
+            return;
+        }
+
+        var matrixStack = Pools.MatStack.borrow();
+        entityOutlineFb.blitToScreen();
+        final var camera = this.minecraft.gameRenderer.getMainCamera();
+        var event = new DrawOutlinesEvent(
+            entityOutlineFb, matrixStack,
+            camera, this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false),
+            DrawOutlinesEvent.OutlineType.MINECRAFT_GLOW
+        );
+        EventManager.INSTANCE.callEvent(event);
+        Pools.MatStack.recycle(matrixStack);
+        OutlineFlag.drawOutline |= event.getDirtyFlag();
+    }
+
+    @WrapOperation(method = "renderLevel", at = @At(
+        value = "FIELD",
+        target = "Lnet/minecraft/client/renderer/state/LevelRenderState;haveGlowingEntities:Z"
+    ))
+    private boolean modifyDrawOutline(LevelRenderState instance, Operation<Boolean> original) {
+        var flag = OutlineFlag.drawOutline;
+        if (flag) {
+            OutlineFlag.drawOutline = false;
+            return true;
+        }
+        return original.call(instance);
+    }
+
+    @ModifyArg(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;cullTerrain(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Z)V"), index = 2)
+    private boolean renderSetupTerrainModifyArg(boolean spectator) {
+        return ModuleFreeCam.INSTANCE.getRunning() || spectator;
+    }
+
+    @Inject(method = "renderBlockOutline", at = @At("HEAD"), cancellable = true)
+    private void cancelBlockOutline(MultiBufferSource.BufferSource immediate, PoseStack matrices, boolean renderBlockOutline, LevelRenderState renderStates, CallbackInfo ci) {
+        if (ModuleBlockOutline.INSTANCE.getRunning()) {
+            ci.cancel();
+        }
+    }
 
 }
         Matrix4f matrix4f, ResourceHandle handle, ResourceHandle handle2, boolean bl, ResourceHandle handle3, ResourceHandle handle4, CallbackInfo ci) {
