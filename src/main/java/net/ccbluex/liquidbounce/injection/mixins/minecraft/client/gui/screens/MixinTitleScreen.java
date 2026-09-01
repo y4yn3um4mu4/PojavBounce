@@ -19,8 +19,6 @@
 package net.ccbluex.liquidbounce.injection.mixins.minecraft.client.gui.screens;
 
 import net.ccbluex.liquidbounce.features.feature.altmanager.AltManagerScreenButton;
-import net.ccbluex.liquidbounce.integration.ui.IntegrationMenuScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,7 +27,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -48,8 +45,6 @@ public abstract class MixinTitleScreen extends Screen {
      */
     @Inject(method = "init", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
-        // Position in top-right corner, below the Alts button
-        // Match the Alts button dimensions and position
         int buttonWidth = 60;
         int buttonHeight = 20;
         int margin = 10;
@@ -58,18 +53,12 @@ public abstract class MixinTitleScreen extends Screen {
 
         Button liquidBounceButton = Button.builder(
             Component.literal("LB"),
-            button -> liquidbounce$openIntegrationMenu()
+            button -> {
+                // Disabled IntegrationMenuScreen redirect to prevent MobileGlues render lockup
+            }
         ).bounds(buttonX, buttonY, buttonWidth, buttonHeight).build();
 
         this.addRenderableWidget(liquidBounceButton);
-    }
-
-    /**
-     * Opens the Integration Menu screen.
-     */
-    @Unique
-    private void liquidbounce$openIntegrationMenu() {
-        Minecraft.getInstance().setScreen(new IntegrationMenuScreen());
     }
 
     /**
@@ -103,3 +92,4 @@ public abstract class MixinTitleScreen extends Screen {
         }
     }
 }
+
