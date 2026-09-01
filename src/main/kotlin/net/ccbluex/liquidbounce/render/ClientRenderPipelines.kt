@@ -29,10 +29,8 @@ import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import net.ccbluex.fastutil.fastIterator
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.render.utils.DistanceFadeUniformConfigurable
-import net.ccbluex.liquidbounce.utils.client.gpuDevice
 import net.ccbluex.liquidbounce.utils.client.logger
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.resources.Identifier
@@ -127,9 +125,6 @@ object ClientRenderPipelines {
             withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
         }
 
-        /**
-         * @see RenderPipelines.ENTITY_OUTLINE_BLIT
-         */
         @JvmField
         val Blit = newPipeline("jcef_blit") {
             screenQuad()
@@ -241,10 +236,6 @@ object ClientRenderPipelines {
     @JvmStatic
     fun relativeQuads(useColor: Boolean) = if (useColor) QuadsRelativeToCamera else QuadsRelativeToCameraNoColor
 
-    /**
-     * @see net.ccbluex.liquidbounce.features.module.modules.render.ModuleStorageESP
-     * @see net.ccbluex.liquidbounce.features.module.modules.render.ModuleBlockESP
-     */
     private val OutlineQuads = newPipeline("outline_quads") {
         withSnippet(RenderPipelines.DEBUG_FILLED_SNIPPET)
         withSnippet(RenderPipelines.GLOBALS_SNIPPET)
@@ -274,12 +265,6 @@ object ClientRenderPipelines {
         forWorldRender()
     }
 
-    // Special
-
-    /**
-     * @see RenderPipelines.ENTITY_OUTLINE_BLIT
-     * @see RenderPipelines.OUTLINE_SNIPPET
-     */
     @JvmField
     val Outline = newPipeline("outline") {
         screenQuad()
@@ -324,16 +309,13 @@ object ClientRenderPipelines {
     }
 
     /**
-     * Precompile
+     * Mobile-safe precompile bypass
      */
     fun precompile() {
         JCEF
         GUI
-
-        renderPipelines.fastIterator().forEach { (_, pipeline) ->
-            gpuDevice.precompilePipeline(pipeline, ClientShaders)
-        }
-        logger.info("Loaded ${renderPipelines.size} Render Pipelines.")
+        logger.info("MobileGlues override: Custom render pipeline precompilation bypassed.")
     }
 
 }
+
